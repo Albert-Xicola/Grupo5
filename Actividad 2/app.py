@@ -1,5 +1,11 @@
-for i in range(1, 101):
-    if i % 3 == 0:
-        print("Fizz")
+x = 0
+y = 101
+
+while y != x:
+    if x % 5 == 0:
+        print("Buzz")
+        x = x + 1
     else:
-        print(i)
+        print(x)
+        x = x + 1
+    
