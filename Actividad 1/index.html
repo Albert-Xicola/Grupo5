@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web-Design</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
+            border-radius: 4px;
+        }
+
+        .hero {
+            background-color: #4CAF50;
+            color: white;
+            padding: 4rem;
+            text-align: center;
+        }
+
+        section {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Barra de navegación -->
+    <nav>
+        <div class="logo">
+            <h2 style="color: white;">Web-Design</h2>
+        </div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Sección principal: Home -->
+    <div id="home" class="hero">
+        <h1>Bienvenido a Web-Design</h1>
+        <p>Ofrecemos soluciones de diseño web personalizadas y creativas para impulsar tu negocio.</p>
+    </div>
+
+    <!-- Sección: Servicios -->
+    <section id="services">
+        <h2>Nuestros Servicios</h2>
+        <p>Nos especializamos en una variedad de servicios de diseño web para hacer que tu sitio sea impresionante:</p>
+        <ul style="list-style-type: none; padding: 0;">
+            <li>🔧 Desarrollo Web Responsivo</li>
+            <li>🎨 Diseño UI/UX Profesional</li>
+            <li>⚡ Optimización de Velocidad y SEO</li>
+            <li>💻 Soporte Técnico y Mantenimiento</li>
+        </ul>
+    </section>
+
+    <!-- Sección: Contacto -->
+    <section id="contact">
+        <h2>Contáctanos</h2>
+        <p>¿Interesado en trabajar con nosotros? ¡Nos encantaría escuchar de ti!</p>
+        <p>📧 Email: info@disenowebcreativo.com</p>
+        <p>📞 Teléfono: +34 123 456 789</p>
+    </section>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2024 Web-Design. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>
+	
