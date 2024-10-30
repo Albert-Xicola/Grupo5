@@ -54,7 +54,7 @@ pipeline {
                         sonar-scanner -Dsonar.projectKey=proyecto \
                                       -Dsonar.sources=./codigo_fuente \
                                       -Dsonar.host.url=http://sonarqube:9000 \
-                                      -Dsonar.login=tu_token_sonarqube
+                                      -Dsonar.login=sqa_624bb02b79476b1a65fdb95209f2b6d59cd3571a
                         """
                     }
                 }
