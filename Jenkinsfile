@@ -1,86 +1,85 @@
 pipeline {
-    agent {
-        docker { image 'jenkins-custom' }
-    }
-    
+    agent any
+
     environment {
-        FTP_SERVER = 'ftp://10.30.212.32:21'
-        FTP_USER = 'TEST'
-        FTP_PASSWORD = '123456'
-        MYSQL_SERVER = 'mysql-db'
-        MYSQL_USER = 'user_proyecto'
-        MYSQL_PASSWORD = 'PassUser123'
-        MYSQL_DATABASE = 'proyecto_db'
+        // Nombre del servidor SonarQube configurado en Jenkins
+        SONARQUBE_SERVER = 'SonarQube'
+        // Agregar sonar-scanner al PATH
+        PATH = "/opt/sonar-scanner/bin:${env.PATH}"
     }
-    
+
     stages {
-        
-        stage('Descargar Código del Servidor FTP') {
+        stage('Checkout') {
             steps {
-                script {
-                    sh """
-                    curl -u $FTP_USER:$FTP_PASSWORD $FTP_SERVER/ruta/codigo.zip -o codigo.zip
-                    unzip codigo.zip -d ./codigo_fuente
-                    """
+                // Clonar el código fuente desde el repositorio
+                checkout scm
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                // Configurar el entorno de SonarQube
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                    // Ejecutar el análisis con SonarScanner
+                    sh '''
+                        sonar-scanner \
+                        -Dsonar.projectKey=testPipeLine \
+                        -Dsonar.sources=vulnerabilities \
+                        -Dsonar.php.version=8.0
+                    '''
                 }
             }
         }
-        
-        stage('Analizar Estructura de Base de Datos') {
+        stage('Quality Gate') {
             steps {
-                script {
-                    sh """
-                    mysql -h $MYSQL_SERVER -u $MYSQL_USER -p$MYSQL_PASSWORD -e "DESCRIBE nombre_de_tu_tabla;"
-                    """
+                // Esperar el resultado del Quality Gate
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
-
-        stage('Validación de Vulnerabilidades SQL') {
+        stage('Deploy to Web Server') {
             steps {
-                script {
-                    sh """
-                    echo "SQL Injection Test Placeholder"
-                    """
+                // Usar credenciales SSH para conectarse al servidor web
+                sshagent(['webserver_ssh_credentials_id']) {
+                    sh '''
+                        ssh user@webserver 'cd /ruta/al/deploy && git clone https://tu.repositorio.git || (cd /ruta/al/deploy/tu_proyecto && git pull)'
+                    '''
                 }
             }
         }
-
-        stage('Análisis Estático con SonarQube') {
+        stage('ZAP Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv('SonarQube') {
-                        sh """
-                        sonar-scanner -Dsonar.projectKey=proyecto \
-                                      -Dsonar.sources=./codigo_fuente \
-                                      -Dsonar.host.url=http://sonarqube:9000 \
-                                      -Dsonar.login=sqa_624bb02b79476b1a65fdb95209f2b6d59cd3571a
-                        """
+                    // Ejecutar ZAP dentro de un contenedor Docker sin usar zap-cli
+                    docker.image('owasp/zap2docker-stable').inside('--network host') {
+                        sh '''
+                            # Iniciar ZAP en modo demonio
+                            zap.sh -daemon -host 127.0.0.1 -port 8090 -config api.disablekey=true &
+                            # Esperar a que ZAP esté listo
+                            timeout=120
+                            while ! curl -s http://127.0.0.1:8090; do
+                                sleep 5
+                                timeout=$((timeout - 5))
+                                if [ $timeout -le 0 ]; then
+                                    echo "ZAP no se inició a tiempo"
+                                    exit 1
+                                fi
+                            done
+                            # Ejecutar el escaneo completo con zap-full-scan.py
+                            zap-full-scan.py -t http://webserver/tu_proyecto -r zap_report.html -I
+                            # Apagar ZAP
+                            zap.sh -cmd -shutdown
+                        '''
                     }
                 }
-            }
-        }
-
-        stage('Revisión de Análisis Estático') {
-            steps {
-                script {
-                    def qualityGate = waitForQualityGate()
-                    if (qualityGate.status != 'OK') {
-                        error 'Fallo en el análisis de SonarQube, reiniciando en 5 minutos.'
-                        sleep 300
-                    }
-                }
-            }
-        }
-
-        stage('Despliegue de Código en Servidor Web') {
-            steps {
-                script {
-                    sh """
-                    scp -r ./codigo_fuente/* usuario@webserver:/ruta/despliegue
-                    """
-                }
+                // Publicar el reporte de ZAP
+                publishHTML(target: [
+                    reportDir: "${env.WORKSPACE}",
+                    reportFiles: 'zap_report.html',
+                    reportName: 'Reporte ZAP'
+                ])
             }
         }
     }
 }
+
