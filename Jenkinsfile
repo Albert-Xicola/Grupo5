@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONARQUBE_SERVER = 'SonarQube'
-        SONAR_AUTH_TOKEN = credentials('sonarqube-token') // ID de la credencial SonarQube token en Jenkins
+        SONAR_AUTH_TOKEN = credentials('sonarqube-token')
         PATH = "/opt/sonar-scanner/bin:${env.PATH}"
     }
 
@@ -38,7 +38,7 @@ pipeline {
             steps {
                 sshagent(['webserver_ssh_credentials_id']) {
                     sh '''
-                        ssh user@webserver 'cd /ruta/al/deploy && git clone https://tu.repositorio.git || (cd /ruta/al/deploy/tu_proyecto && git pull)'
+                        jenkins@10.30.212.61 'cd /var/www/Proyecto_web/ && git clone https://github.com/Albert-Xicola/Grupo5.git || (cd /var/www/Proyecto_web/ && git pull)'
                     '''
                 }
             }
@@ -58,7 +58,7 @@ pipeline {
                                     exit 1
                                 fi
                             done
-                            zap-full-scan.py -t http://webserver/tu_proyecto -r zap_report.html -I
+                            zap-full-scan.py -t http://10.30.212.61 -r zap_report.html -I
                             zap.sh -cmd -shutdown
                         '''
                     }
