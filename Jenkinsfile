@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONARQUBE_SERVER = 'SonarQube'
         SONAR_AUTH_TOKEN = credentials('sonarqube-token')
-        PATH = "/opt/sonar-scanner/bin:${PATH}"
+        PATH = "/opt/sonar-scanner/bin:${env.PATH}"
     }
 
     stages {
@@ -64,7 +64,7 @@ pipeline {
                     }
                 }
                 publishHTML(target: [
-                    reportDir: "${WORKSPACE}",
+                    reportDir: "${env.WORKSPACE}",
                     reportFiles: 'zap_report.html',
                     reportName: 'Reporte ZAP'
                 ])
