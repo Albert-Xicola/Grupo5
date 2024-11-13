@@ -13,16 +13,11 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Verify PATH') {
-    steps {
-        sh 'echo $PATH'  // Verifica si la ruta a /opt/sonar-scanner/bin está incluida en el PATH
-    }
-}
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh '''
-                        sonar-scanner \
+                        /opt/sonar-scanner/bin/sonar-scanner \
                         -Dsonar.projectKey=testPipeLine \
                         -Dsonar.sources=vulnerabilities \
                         -Dsonar.php.version=8.0 \
