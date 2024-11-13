@@ -19,7 +19,7 @@ pipeline {
                     sh '''
                         /opt/sonar-scanner/bin/sonar-scanner \
                         -Dsonar.projectKey=testPipeLine \
-                        -Dsonar.sources=vulnerabilities \
+                        -Dsonar.sources=. \
                         -Dsonar.php.version=8.0 \
                         -Dsonar.host.url=http://10.30.212.61:9000/ \
                         -Dsonar.login=sqa_41a7546fa8c3315ab2274b5bc519d44151b6d80b
