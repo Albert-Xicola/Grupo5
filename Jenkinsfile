@@ -13,6 +13,11 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Verify PATH') {
+    steps {
+        sh 'echo $PATH'  // Verifica si la ruta a /opt/sonar-scanner/bin está incluida en el PATH
+    }
+}
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
