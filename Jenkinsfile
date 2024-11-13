@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONARQUBE_SERVER = 'SonarQube'
         SONAR_AUTH_TOKEN = credentials('sonarqube-token')
-        PATH = "/opt/sonar-scanner/bin:${env.PATH}"
+        PATH = "/opt/sonar-scanner/bin/sonar-scanner"
     }
 
     stages {
@@ -21,8 +21,8 @@ pipeline {
                         -Dsonar.projectKey=testPipeLine \
                         -Dsonar.sources=vulnerabilities \
                         -Dsonar.php.version=8.0 \
-                        -Dsonar.host.url=${SONAR_HOST_URL} \
-                        -Dsonar.login=${SONAR_AUTH_TOKEN}
+                        -Dsonar.host.url=http://10.30.212.61:9000/ \
+                        -Dsonar.login=sqa_41a7546fa8c3315ab2274b5bc519d44151b6d80b
                     '''
                 }
             }
