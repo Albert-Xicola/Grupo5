@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONARQUBE_SERVER = 'SonarQube'
         SONAR_AUTH_TOKEN = credentials('sonarqube-token')
-        PATH = "/opt/sonar-scanner/bin:${env.PATH}"
+        PATH = "/opt/sonar-scanner/bin:${PATH}"
     }
 
     stages {
@@ -21,7 +21,7 @@ pipeline {
                         -Dsonar.projectKey=testPipeLine \
                         -Dsonar.sources=vulnerabilities \
                         -Dsonar.php.version=8.0 \
-                        -Dsonar.host.url=${env.SONAR_HOST_URL} \
+                        -Dsonar.host.url=${SONAR_HOST_URL} \
                         -Dsonar.login=${SONAR_AUTH_TOKEN}
                     '''
                 }
@@ -64,7 +64,7 @@ pipeline {
                     }
                 }
                 publishHTML(target: [
-                    reportDir: "${env.WORKSPACE}",
+                    reportDir: "${WORKSPACE}",
                     reportFiles: 'zap_report.html',
                     reportName: 'Reporte ZAP'
                 ])
