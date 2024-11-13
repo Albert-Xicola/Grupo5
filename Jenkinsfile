@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONARQUBE_SERVER = 'SonarQube'
         SONAR_AUTH_TOKEN = credentials('sonarqube-token')
-        PATH = "/opt/sonar-scanner/bin/sonar-scanner"
+        PATH = "/opt/sonar-scanner/bin:${env.PATH}" 
     }
 
     stages {
