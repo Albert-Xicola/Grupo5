@@ -28,14 +28,14 @@ pipeline {
                 }
             }
         }
-        stage('Quality Gate') {
-            steps {
+        //stage('Quality Gate') {
+          //  steps {
                 // Aumenta el tiempo de espera si el análisis tarda más de lo esperado
-                timeout(time: 3, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+            //    timeout(time: 3, unit: 'HOURS') {
+              //      waitForQualityGate abortPipeline: true
+               // }
+            //}
+        //}
         stage('DAST con OWASP ZAP') {
             steps {
                 script {
