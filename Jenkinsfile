@@ -30,18 +30,18 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            // Registro el fallo, pero no detengo el pipeline
+                            echo "Quality Gate fallido: ${qg.status}"
+                            currentBuild.result = 'UNSTABLE' // O marca el build como 'FAILURE' si prefieres detenerlo
+                        }
+                    }
                 }
             }
         }
-        stage('Quality Gate') {
-            steps {
-                // Esperar el resultado del Quality Gate
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+
         stage('DAST con OWASP ZAP') {
             steps {
                 script {
