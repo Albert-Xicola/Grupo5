@@ -43,10 +43,6 @@ pipeline {
                 }
             }
         }
-        pipeline {
-    agent any
-
-    stages {
         stage('DAST con OWASP ZAP') {
             steps {
                 script {
@@ -55,14 +51,14 @@ pipeline {
                     docker rm -f zap_scan || true
                     '''
 
-                    // Run OWASP ZAP container without mounting volumes and without '--rm'
+                    // Run OWASP ZAP container
                     sh '''
                     docker run --user root --name zap_scan -v zap_volume:/zap/wrk/ -t ghcr.io/zaproxy/zaproxy:stable \
                     zap-baseline.py -t https://10.30.212.61 \
                     -r reporte_zap.html -I
                     '''
 
-                    // Copy the report directly from the 'zap_scan' container to the Jenkins workspace
+                    // Copy the report from the 'zap_scan' container to Jenkins workspace
                     sh '''
                     docker cp zap_scan:/zap/wrk/reporte_zap.html ./reporte_zap.html
                     '''
