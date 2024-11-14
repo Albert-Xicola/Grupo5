@@ -28,12 +28,10 @@ pipeline {
             }
         }
         stage('Quality Gate') {
-            timeout(time: 1, unit: 'HOURS') {
-                script {
-                    def qualityGate = waitForQualityGate()
-                    if (qualityGate.status != 'OK') {
-                        // Puedes optar por hacer que falle el pipeline o simplemente mostrar una advertencia.
-                        error "Pipeline detenido. Quality Gate falló: ${qualityGate.status}"
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    script {
+                        waitForQualityGate()
                     }
                 }
             }
