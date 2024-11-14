@@ -31,7 +31,7 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 // Aumenta el tiempo de espera si el análisis tarda más de lo esperado
-                timeout(time: 1, unit: 'HOURS') {
+                timeout(time: 3, unit: 'HOURS') {
                     waitForQualityGate abortPipeline: true
                 }
             }
