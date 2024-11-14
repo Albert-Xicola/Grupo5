@@ -34,12 +34,17 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Web Server') {
+        stage('Quality Gate') {
             steps {
-                sshagent(['webserver_ssh_credentials_id']) {
-                    sh '''
-                        jenkins@10.30.212.61 'cd /var/www/Proyecto_web/ && git clone https://github.com/Albert-Xicola/Grupo5.git || (cd /var/www/Proyecto_web/ && git pull)'
-                    '''
+                timeout(time: 1, unit: 'HOURS') {
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            // Registro el fallo, pero no detengo el pipeline
+                            echo "Quality Gate fallido: ${qg.status}"
+                            currentBuild.result = 'UNSTABLE' // O marca el build como 'FAILURE' si prefieres detenerlo
+                        }
+                    }
                 }
             }
         }
