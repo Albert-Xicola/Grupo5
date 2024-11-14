@@ -28,19 +28,17 @@ pipeline {
             }
         }
         stage('Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    script {
-                        def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            // Registro el fallo, pero no detengo el pipeline
-                            echo "Quality Gate fallido: ${qg.status}"
-                            currentBuild.result = 'UNSTABLE' // O marca el build como 'FAILURE' si prefieres detenerlo
-                        }
-                    }
-                }
+    timeout(time: 1, unit: 'HOURS') {
+        script {
+            def qualityGate = waitForQualityGate()
+            if (qualityGate.status != 'OK') {
+                // Puedes optar por hacer que falle el pipeline o simplemente mostrar una advertencia.
+                error "Pipeline detenido. Quality Gate falló: ${qualityGate.status}"
             }
         }
+    }
+}
+
 
         stage('DAST con OWASP ZAP') {
             steps {
