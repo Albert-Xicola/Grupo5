@@ -22,7 +22,7 @@ pipeline {
                         -Dsonar.sources=. \
                         -Dsonar.php.version=8.0 \
                         -Dsonar.host.url=http://10.30.212.61:9000/ \
-                        -Dsonar.login=sqa_41a7546fa8c3315ab2274b5bc519d44151b6d80b
+                        -Dsonar.login=${SONAR_AUTH_TOKEN}
                     '''
                 }
             }
@@ -31,7 +31,10 @@ pipeline {
             steps {
                 timeout(time: 1, unit: 'HOURS') {
                     script {
-                        waitForQualityGate()
+                        def qualityGate = waitForQualityGate()
+                        if (qualityGate.status != 'OK') {
+                            error "Pipeline aborted due to Quality Gate failure: ${qualityGate.status}"
+                        }
                     }
                 }
             }
@@ -40,9 +43,7 @@ pipeline {
             steps {
                 script {
                     // Remove any existing container named 'zap_scan'
-                    sh '''
-                    docker rm -f zap_scan || true
-                    '''
+                    sh 'docker rm -f zap_scan || true'
 
                     // Run OWASP ZAP container
                     sh '''
@@ -52,14 +53,10 @@ pipeline {
                     '''
 
                     // Copy the report from the 'zap_scan' container to Jenkins workspace
-                    sh '''
-                    docker cp zap_scan:/zap/wrk/reporte_zap.html ./reporte_zap.html
-                    '''
+                    sh 'docker cp zap_scan:/zap/wrk/reporte_zap.html ./reporte_zap.html'
 
                     // Remove the 'zap_scan' container
-                    sh '''
-                    docker rm zap_scan
-                    '''
+                    sh 'docker rm zap_scan'
                 }
             }
             post {
