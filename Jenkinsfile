@@ -22,14 +22,15 @@ pipeline {
                         -Dsonar.sources=. \
                         -Dsonar.php.version=8.0 \
                         -Dsonar.host.url=http://10.30.212.61:9000/ \
-                        -Dsonar.login=${SONAR_AUTH_TOKEN}
+                        -Dsonar.login=${SONAR_AUTH_TOKEN} \
+                        -Dsonar.python.version=3.x  # Especifica la versión de Python si es necesario
                     '''
                 }
             }
         }
         stage('Quality Gate') {
             steps {
-                // Esperar el resultado del Quality Gate
+                // Aumenta el tiempo de espera si el análisis tarda más de lo esperado
                 timeout(time: 1, unit: 'HOURS') {
                     waitForQualityGate abortPipeline: true
                 }
