@@ -45,7 +45,7 @@ pipeline {
                     // Run OWASP ZAP container
                     sh '''
                     docker run --user root --name zap_scan -v zap_volume:/zap/wrk/ -t ghcr.io/zaproxy/zaproxy:stable \
-                    zap-baseline.py -t https://10.30.212.61 \
+                    zap-baseline.py -t http://10.30.212.61 \
                     -r reporte_zap.html -I
                     '''
 
