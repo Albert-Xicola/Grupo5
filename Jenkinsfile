@@ -62,5 +62,15 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to Web Server') {
+            steps {
+                sshagent(['webserver_ssh_credentials_id']) {
+                    sh '''
+                        # Acceder al servidor y clonar el repositorio o hacer un pull si ya existe
+                        ssh jenkins@10.30.212.61 'cd /var/www/Proyecto_web/ && git clone https://github.com/Albert-Xicola/Grupo5.git || (cd /var/www/Proyecto_web/ && git pull)'
+                    '''
+                }
+            }
+        }
     }
 }
