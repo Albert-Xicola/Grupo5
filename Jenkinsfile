@@ -68,7 +68,7 @@ pipeline {
                     sh '''
                         echo "Verificando clave SSH"
                         ssh-add -l
-                        ssh -o StrictHostKeyChecking=no jenkins@10.30.212.61 'cd /var/www/Proyecto_web/ && git clone https://github.com/Albert-Xicola/Grupo5.git || (cd /var/www/Proyecto_web/ && git pull)'
+                        ssh -o StrictHostKeyChecking=no root@10.30.212.61 'cd /var/www/Proyecto_web/ && git clone https://github.com/Albert-Xicola/Grupo5.git || (cd /var/www/Proyecto_web/ && git pull)'
                     '''
         }
             }
